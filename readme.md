@@ -1,9 +1,11 @@
-#通用HAL(待命名)
+#通用HAL -- halo
 
-通用HAL用来解决嵌入式MCU开发过程中，高层代码对底层硬件的依赖问题。通过实现通用的硬件抽象层（HAL），来实现对底层硬件的屏蔽。
+halo用来解决嵌入式MCU开发过程中，高层代码对底层硬件的依赖问题。通过实现通用的硬件抽象层（HAL），来实现对底层硬件的屏蔽。并且，halo实现了一些基本的系统无关的基础构件。halo可以作为其他实时操作系统（RTOS）或者状态机构架的硬件抽象层和基础框架层。
 
-1. **快速开发**： 应用程序开发用户，不需要熟悉目标MCU的各个外设寄存器，直接调用HAL中的通用接口。
+1. **快速开发**：应用程序开发用户，不需要熟悉目标MCU的各个外设寄存器，直接调用HAL中的通用接口。
 2. **快速移植**：硬件BSP定义了和硬件相关的各个设置，应用程序直接更新这个设置，就可以实现应用的移植。
+3. **GUI配置**：可以通过GUI来配置halo，并且，可以集成用户定义模块的配置功能。
+4. **兼容MISRA**：兼容最新的MISRA代码标准
 
 --------------------------------
 
@@ -11,15 +13,48 @@
 
 ##简介
 
-随着现在ARM等32位MCU的流行，系统资源和性能得到了非常大的丰富和提高。通用HAL的设计，就是为了实现在不同的MCU上，提供同一套硬件访问接口，使得高层的代码可以硬件无关，提高开发和维护的效率。并且，代码都是构架无关的，高层应用可以使用各种不同的构架以及实时操作系统（RTOS）。以下的示例代码，我试用vsfhal层的实现，这里也只是示例，并不代表最终的实现。
+嵌入式MCU应用的开发，是在当前硬件限制条件下，采用最高效的开发方式。随着现在ARM等32位MCU的流行，系统资源和性能得到了非常大的丰富和提高。halo的设计，就是为了实现在不同的MCU上，提供同一套硬件访问接口，使得高层的代码可以硬件无关，提高开发和维护的效率。并且，代码都是构架无关的，高层应用可以使用各种不同的构架以及实时操作系统（RTOS）。
 
-###简单的基于函数的访问接口
+以下的示例代码，我使用vsfhal层的实现，这里也只是示例，并不代表最终的实现。
 
+###基于函数的访问外设以及基于接口访问外设
+基于函数访问外设（用于访问芯片自带的外设资源）：
 ``` c
 vsfhal_gpio_init(USBD_PULLUP_PORT);
 vsfhal_gpio_clear(USBD_PULLUP_PORT, 1 << USBD_PULLUP_PIN);
 vsfhal_gpio_config_pin(USBD_PULLUP_PORT, USBD_PULLUP_PIN, GPIO_OUTPP);
 ```
+
+基于接口访问外设（可以是芯片自带的，也可以是通过其他方式实现的）：
+``` c
+struct vsfusbd_device_t
+{
+	......
+	struct interface_usbd_t *drv;
+	......
+};
+
+static void vsfusbd_transact_out(struct vsfusbd_device_t *device,
+								struct vsfusbd_transact_t *transact)
+{
+	uint8_t ep = transact->ep;
+	struct interface_usbd_t *drv = device->drv;
+
+	if (transact->idle)
+	{
+		uint16_t ep_size = drv->ep.get_OUT_epsize(ep);
+		uint16_t pkg_size = min(ep_size, transact->data_size);
+		uint32_t free_size = stream_get_free_size(transact->stream);
+
+		transact->idle = free_size < pkg_size;
+		if (!transact->idle)
+		{
+			drv->ep.enable_OUT(ep);
+		}
+	}
+}
+```
+上述代码为usbd协议栈中的代码，usbd可以是芯片自带的外设，也可以是使用GPIO模拟的，甚至可以是使用一些通用接口（比如SPI）驱动扩展芯片实现的。通过接口访问外设，可以屏蔽接口的不同实现方式，对高层代码的影响。
 
 ###对外设编号，并且通过编号来访问
 
@@ -111,7 +146,12 @@ vsf_err_t gd32f1x0_i2c_init(uint8_t index)
 ```
 在GD32的IIC驱动里，定义IIC的外设序号包含了IIC的引脚映射信息。所以，用户简单设置一个序号，就可以确定使用不同的IIC引脚了。
 
-###接口都是非阻塞的，提供轮询和中断回调2中方式
+通过编号，就可以访问对应的芯片外设。BSP里存放当前硬件使用的所有外设对应的编号，这样，就可以简单实现硬件配置文件，是的对于不同的工程，应用代码通用。芯片移植也只需要新建对应的工程，并且修改硬件配置文件，以符合实际硬件。
+
+###图形化配置
+图形化配置可以用来实现芯片和外部模块的功能配置，自动生成BSP硬件配置文件，以及模块的配置文件。图形化组件由xml定义，包含各种不同MCU组件、各种用户模块组件。
+
+###接口都是非阻塞的，并且可以在轮询和中断方式中使用
 
 由于系统构架的不同，系统可能运行在轮询模式下，也可能在中断模式下（前后台系统）。对于这2种系统，接口上会有一些区别。比如，串口应用在轮询模式下，需要轮询收发完成标志；而在中断回调模式下，只需要在收发完成后，调用相应的回调接口（这种模式类似于硬件的中断）。这2种模式，在实际应用中，都可能会碰到，我以USBD的实现来举例。
 
@@ -144,18 +184,210 @@ void vsfhal_tickclk_poll()
 ```
 这里，SysTick_Handler就是中断接口，在轮询模式下，poll里的代码，会在定时器溢出的时候，调用SysTick_Handler。
 
-###一些构架无关的基础模块
+###一些构架无关的基础构件
 
 除了硬件控制接口外，还可以提供一些通用的构架无关的基础模块，比如fifo模块、stream模块等等。
 
 ####vsfstream -- 流控
 
-vsfstream定义了一套不依赖内存实现的流控的接口，也就是说，可以在不同形式的内存结构上实现自动流控，免去用户代码自己实现流控。目前实现了有3种流，并且，用于也可以扩展其他满足特殊需求的流控，对于高层应用来说，调用接口和控制方式完全一样：
+vsfstream定义了一套不依赖内存实现的流控的接口，也就是说，可以在不同形式的内存结构上实现自动流控，免去用户代码自己实现流控。目前实现了有3种流（流实现为面向对象，3种特定的流位基本流类型的子类型），并且，用于也可以扩展其他满足特殊需求的流控，对于高层应用来说，调用接口和控制方式完全一样：
 
 1. vsf_fifostream_t: 基于FIFO内存结构的流控。
 2. vsf_mbufstream_t: 基于多缓冲内存结构的流控，一般用于流设备和块设备的转换，比如视频码流和视频帧块的互转。
 3. vsf_bufstream_t: 基于普通内存块结构的流控。
 
+TBD
+
 ##接口规范
 
-TBD
+###core
+``` c
+struct interface_core_t
+{
+	vsf_err_t (*init)(void *p);
+	vsf_err_t (*fini)(void *p);
+	vsf_err_t (*reset)(void *p);
+	uint32_t (*get_stack)(void);
+	vsf_err_t (*set_stack)(uint32_t sp);
+	void (*sleep)(uint32_t mode);
+	vsf_err_t (*pendsv_config)(void (*on_pendsv)(void *), void *param);
+	vsf_err_t (*pendsv_trigger)(void);
+};
+```
+
+###Tick
+``` c
+struct interface_tickclk_t
+{
+	vsf_err_t (*init)(void);
+	vsf_err_t (*fini)(void);
+	void (*poll)(void);
+	vsf_err_t (*start)(void);
+	vsf_err_t (*stop)(void);
+	uint32_t (*get_count)(void);
+	vsf_err_t (*config_cb)(void (*)(void*), void*);
+};
+```
+
+###GPIO
+``` c
+struct interface_gpio_t
+{
+#if IFS_CONST_EN
+	struct
+	{
+		uint32_t INFLOAT;
+		uint32_t INPU;
+		uint32_t INPD;
+		uint32_t OUTPP;
+		uint32_t OUTOD;
+	} constants;
+#endif
+	vsf_err_t (*init)(uint8_t index);
+	vsf_err_t (*fini)(uint8_t index);
+	vsf_err_t (*config_pin)(uint8_t index, uint8_t pin_idx, uint32_t mode);
+	vsf_err_t (*config)(uint8_t index, uint32_t pin_mask, uint32_t io, uint32_t pull_en_mask, uint32_t input_pull_mask);
+	vsf_err_t (*set)(uint8_t index, uint32_t pin_mask);
+	vsf_err_t (*clear)(uint8_t index, uint32_t pin_mask);
+	vsf_err_t (*out)(uint8_t index, uint32_t pin_mask, uint32_t value);
+	vsf_err_t (*in)(uint8_t index, uint32_t pin_mask, uint32_t *value);
+	uint32_t (*get)(uint8_t index, uint32_t pin_mask);
+};
+```
+
+###SPI
+``` c
+struct interface_spi_t
+{
+#if IFS_CONST_EN
+	struct
+	{
+		uint32_t MASTER;
+		uint32_t SLAVE;
+		uint32_t MODE0;
+		uint32_t MODE1;
+		uint32_t MODE2;
+		uint32_t MODE3;
+		uint32_t MSB_FIRST;
+		uint32_t LSB_FIRST;
+	} constants;
+#endif
+	vsf_err_t (*init)(uint8_t index);
+	vsf_err_t (*fini)(uint8_t index);
+	vsf_err_t (*get_ability)(uint8_t index, struct spi_ability_t *ability);
+	vsf_err_t (*enable)(uint8_t index);
+	vsf_err_t (*disable)(uint8_t index);
+	vsf_err_t (*config)(uint8_t index, uint32_t kHz, uint32_t mode);
+	vsf_err_t (*config_cb)(uint8_t index, uint32_t int_priority, void *p, void (*onready)(void *));
+
+	vsf_err_t (*select)(uint8_t index, uint8_t cs);
+	vsf_err_t (*deselect)(uint8_t index, uint8_t cs);
+
+	vsf_err_t (*start)(uint8_t index, uint8_t *out, uint8_t *in, uint32_t len);
+	uint32_t (*stop)(uint8_t index);
+};
+```
+
+###IIC
+``` c
+struct interface_i2c_t
+{
+	vsf_err_t (*init)(uint8_t index);
+	vsf_err_t (*fini)(uint8_t index);
+	vsf_err_t (*config)(uint8_t index, uint16_t kHz);
+	vsf_err_t (*config_cb)(uint8_t index, void *param, void (*cb)(void*, vsf_err_t));
+	vsf_err_t (*xfer)(uint8_t index, uint16_t addr, struct interface_i2c_msg_t *msg, uint8_t msglen);
+};
+```
+
+###Flash
+
+###Timer
+
+###Eint
+``` c
+struct interface_eint_t
+{
+#if IFS_CONST_EN
+	struct
+	{
+		uint32_t ONFALL;
+		uint32_t ONRISE;
+		uint32_t ONLOW;
+		uint32_t ONHIGH;
+	} constants;
+#endif
+	vsf_err_t (*init)(uint32_t index);
+	vsf_err_t (*fini)(uint32_t index);
+	vsf_err_t (*config)(uint32_t index, uint32_t type, uint32_t int_priority, void *param, void (*callback)(void *param));
+	vsf_err_t (*enable)(uint32_t index);
+	vsf_err_t (*disable)(uint32_t index);
+};
+```
+
+###USART
+``` c
+struct interface_usart_t
+{
+#if IFS_CONST_EN
+	struct
+	{
+		uint32_t STOPBITS_1;
+		uint32_t STOPBITS_1P5;
+		uint32_t STOPBITS_2;
+		uint32_t PARITY_NONE;
+		uint32_t PARITY_ODD;
+		uint32_t PARITY_EVEN;
+	} constants;
+#endif
+	vsf_err_t (*init)(uint8_t index);
+	vsf_err_t (*fini)(uint8_t index);
+	vsf_err_t (*config)(uint8_t index, uint32_t baudrate, uint32_t mode);
+	vsf_err_t (*config_cb)(uint8_t index, uint32_t int_priority, void *p, void (*ontx)(void *), void (*onrx)(void *, uint16_t));
+	uint16_t (*tx_bytes)(uint8_t index, uint8_t *data, uint16_t size);
+	uint16_t (*tx_get_free_size)(uint8_t index);
+	uint16_t (*rx_bytes)(uint8_t index, uint8_t *data, uint16_t size);
+	uint16_t (*rx_get_data_size)(uint8_t index);
+};
+```
+
+###ADC
+``` c
+struct interface_adc_t
+{
+	vsf_err_t (*init)(uint8_t index);
+	vsf_err_t (*fini)(uint8_t index);
+	vsf_err_t (*config)(uint8_t index, uint32_t clock_hz, uint32_t mode);
+	vsf_err_t (*config_channel)(uint8_t index, uint8_t channel, uint8_t cycles);
+	uint32_t (*get_max_value)(uint8_t index);
+	vsf_err_t (*calibrate)(uint8_t index, uint8_t channel);
+	vsf_err_t (*start)(uint8_t index, uint8_t channel,
+				 		void (callback)(void *, uint16_t), void *param);
+};
+```
+
+###USBD
+
+###USBDIO(GPIO emulated USBD)
+``` c
+struct interface_usbdio_t
+{
+	vsf_err_t (*init)(void (*onrx)(enum usbdio_evt_t evt, uint8_t *buf, uint16_t len));
+	vsf_err_t (*fini)(void);
+	vsf_err_t (*tx)(uint8_t *buf, uint16_t len);
+};
+```
+
+###HCD(Host Controller driver, eg: OHCI, EHCI)
+``` c
+struct interface_hcd_t
+{
+	vsf_err_t (*init)(uint32_t index, vsf_err_t (*hcd_irq)(void *), void *param);
+	vsf_err_t (*fini)(uint32_t index);
+	void* (*regbase)(uint32_t index);
+};
+```
+
+###PWM
+
+###EBI
