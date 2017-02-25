@@ -5,7 +5,7 @@ haloÓÃÀ´½â¾öÇ¶ÈëÊ½MCU¿ª·¢¹ý³ÌÖÐ£¬¸ß²ã´úÂë¶Ôµ×²ãÓ²¼þµÄÒÀÀµÎÊÌâ¡£Í¨¹ýÊµÏÖÍ¨ÓÃµÄÓ²¼
 1. **¿ìËÙ¿ª·¢**£ºÓ¦ÓÃ³ÌÐò¿ª·¢ÓÃ»§£¬²»ÐèÒªÊìÏ¤Ä¿±êMCUµÄ¸÷¸öÍâÉè¼Ä´æÆ÷£¬Ö±½Óµ÷ÓÃHALÖÐµÄÍ¨ÓÃ½Ó¿Ú¡£
 2. **¿ìËÙÒÆÖ²**£ºÓ²¼þBSP¶¨ÒåÁËºÍÓ²¼þÏà¹ØµÄ¸÷¸öÉèÖÃ£¬Ó¦ÓÃ³ÌÐòÖ±½Ó¸üÐÂÕâ¸öÉèÖÃ£¬¾Í¿ÉÒÔÊµÏÖÓ¦ÓÃµÄÒÆÖ²¡£
 3. **GUIÅäÖÃ**£º¿ÉÒÔÍ¨¹ýGUIÀ´ÅäÖÃhalo£¬²¢ÇÒ£¬¿ÉÒÔ¼¯³ÉÓÃ»§¶¨ÒåÄ£¿éµÄÅäÖÃ¹¦ÄÜ¡£
-4. **¼æÈÝMISRA**£º¼æÈÝ×îÐÂµÄMISRA´úÂë±ê×¼
+4. ~~**¼æÈÝMISRA**£º¼æÈÝ×îÐÂµÄMISRA´úÂë±ê×¼~~
 
 --------------------------------
 
@@ -17,15 +17,19 @@ haloÓÃÀ´½â¾öÇ¶ÈëÊ½MCU¿ª·¢¹ý³ÌÖÐ£¬¸ß²ã´úÂë¶Ôµ×²ãÓ²¼þµÄÒÀÀµÎÊÌâ¡£Í¨¹ýÊµÏÖÍ¨ÓÃµÄÓ²¼
 
 ÒÔÏÂµÄÊ¾Àý´úÂë£¬ÎÒÊ¹ÓÃvsfhal²ãµÄÊµÏÖ£¬ÕâÀïÒ²Ö»ÊÇÊ¾Àý£¬²¢²»´ú±í×îÖÕµÄÊµÏÖ¡£
 
-###»ùÓÚº¯ÊýµÄ·ÃÎÊÍâÉèÒÔ¼°»ùÓÚ½Ó¿Ú·ÃÎÊÍâÉè
-»ùÓÚº¯Êý·ÃÎÊÍâÉè£¨ÓÃÓÚ·ÃÎÊÐ¾Æ¬×Ô´øµÄÍâÉè×ÊÔ´£©£º
+###¶àÖÖÍâÉè·ÃÎÊ·½Ê½
+
+haloÖÖÊµÏÖÁË3ÖÖÍâÉè·ÃÎÊµÄ·½Ê½£¬¾ßÌåÑ¡ÓÃÊ²Ã´·½Ê½£¬ÓÉÓÃ»§¸ù¾Ý×Ô¼ºµÄÓ¦ÓÃÐèÇó£¬¿ª·¢Î¬»¤¸´ÔÓ¶ÈÀ´×ÔÐÐÑ¡Ôñ¡£²»Í¬µÄ·ÃÎÊ·½Ê½¸÷ÓÐÌØµã£¬Èç¹ûÓÃ»§Í¬Ê±Ê¹ÓÃ¶¯Ì¬ºÍ¾²Ì¬µÄ½Ó¿Ú£¬ÓÃ»§ÐèÒª¿ØÖÆ×ÊÔ´²»³åÍ»£¨±ÈÈç£¬Ó¦ÓÃÖÐ£¬Ä£¿éA¶¯Ì¬·ÖÅäµÃµ½¶¨Ê±Æ÷0£¬Ä£¿éBÖ¸¶¨Ê¹ÓÃ¶¨Ê±Æ÷0£¬ÕâÑù¶ÔÓÚ¶¨Ê±Æ÷0µÄÊ¹ÓÃ£¬¾Í»áÓÐ³åÍ»£©¡£
+
+####»ùÓÚº¯Êý·ÃÎÊÍâÉè£¨ÓÃÓÚ·ÃÎÊÐ¾Æ¬×Ô´øµÄÍâÉè×ÊÔ´£©£º
 ``` c
 vsfhal_gpio_init(USBD_PULLUP_PORT);
 vsfhal_gpio_clear(USBD_PULLUP_PORT, 1 << USBD_PULLUP_PIN);
 vsfhal_gpio_config_pin(USBD_PULLUP_PORT, USBD_PULLUP_PIN, GPIO_OUTPP);
 ```
+ÕâÖÖ·½Ê½ÊÊÓÃÓÚÖ±½Óµ÷ÓÃº¯ÊýÐÎÊ½µÄÇý¶¯½Ó¿Ú£¬²¢ÇÒµÚÒ»¸ö²ÎÊýÊÇ¶ÔÓ¦µÄÍâÉèµÄÐòºÅ¡£¶ÔÓÚÒ»Ð©ÍâÉè£¬ÐòºÅ»¹°üÀ¨ÁËÍâÉèÒý½ÅµÄ¸´ÓÃ¶¨Òå£¬µ×²ãÇý¶¯»á×Ô¶¯Ö´ÐÐÒý½Å¸´ÓÃµÄ³õÊ¼»¯£¬²»ÐèÒª¸ß²ã½éÈë¡£ÍâÉèµÄÐòºÅ£¬ÊÇÍ¨¹ýÍ¼ÐÎ»¯ÅäÖÃ½çÃæ£¬×Ô¶¯Éú³ÉµÄ¡£
 
-»ùÓÚ½Ó¿Ú·ÃÎÊÍâÉè£¨¿ÉÒÔÊÇÐ¾Æ¬×Ô´øµÄ£¬Ò²¿ÉÒÔÊÇÍ¨¹ýÆäËû·½Ê½ÊµÏÖµÄ£©£º
+####»ùÓÚ½Ó¿Ú·ÃÎÊÍâÉè£¨¿ÉÒÔÊÇÐ¾Æ¬×Ô´øµÄ£¬Ò²¿ÉÒÔÊÇÍ¨¹ýÆäËû·½Ê½ÊµÏÖµÄ£©£º
 ``` c
 struct vsfusbd_device_t
 {
@@ -55,6 +59,14 @@ static void vsfusbd_transact_out(struct vsfusbd_device_t *device,
 }
 ```
 ÉÏÊö´úÂëÎªusbdÐ­ÒéÕ»ÖÐµÄ´úÂë£¬usbd¿ÉÒÔÊÇÐ¾Æ¬×Ô´øµÄÍâÉè£¬Ò²¿ÉÒÔÊÇÊ¹ÓÃGPIOÄ£ÄâµÄ£¬ÉõÖÁ¿ÉÒÔÊÇÊ¹ÓÃÒ»Ð©Í¨ÓÃ½Ó¿Ú£¨±ÈÈçSPI£©Çý¶¯À©Õ¹Ð¾Æ¬ÊµÏÖµÄ¡£Í¨¹ý½Ó¿Ú·ÃÎÊÍâÉè£¬¿ÉÒÔÆÁ±Î½Ó¿ÚµÄ²»Í¬ÊµÏÖ·½Ê½£¬¶Ô¸ß²ã´úÂëµÄÓ°Ïì¡£
+
+»ùÓÚ½Ó¿ÚµÄÍâÉè·ÃÎÊ£¬ÔÚBSP²ãÖÐ£¬¶¨ÒåÏàÓ¦µÄÍâÉèµÄÃû×Ö£¨²Ù×÷º¯ÊýµÈ×é³ÉµÄÊý¾Ý½á¹¹£©£¬±ÈÈç£ºIIC_EEPROM£¬±íÊ¾Á´½ÓEEPROMµÄIIC½Ó¿Ú¡£µ÷ÓÃµÄÊ±ºò£¬Ê¹ÓÃIIC_EEPROM.Init(...)¡£ÕâÖÖ·½Ê½£¬Ïàµ±ÓÚÊÇÎªµÚÒ»ÖÖ·½Ê½£¬¼ÓÉÏÁËÃæÏò¶ÔÏóµÄ·â×°¡£
+
+####¶¯Ì¬ÍâÉè·ÖÅä
+ÕâÀï¾Í¾Ù¼¸ÖÖÊÊºÏµÄÓ¦ÓÃÇé¿ö£º
+1. ¶¨Ê±Æ÷×ÊÔ´×Ô¶¯·ÖÅä¡£¸ß²ã´úÂëÖ»ÐèÒªÉêÇëÒ»¸ö¶¨Ê±Æ÷×ÊÔ´£¬²¢ÇÒ´«ÈëÐèÒªµÄ¶¨Ê±Æ÷ÄÜÁ¦£¬Çý¶¯×Ô¶¯Æ¥ÅäÊÊºÏµÄ¶¨Ê±Æ÷¡£ÕâÖÖÊÊºÏ¶à¸öÏµÍ³ÀàËÆ¹¦ÄÜ×ÊÔ´µÄ·ÃÎÊ¹ÜÀí¡£
+2. ¼ÓÃÜ/Hash×ÊÔ´·ÖÅä¡£ÓÐÐ©Ð¾Æ¬´øCRC£¬µ±Ó¦ÓÃÉêÇëCRCµÄÊ±ºò£¬µÃµ½Ó²¼þµÄ½Ó¿Ú¡£Èç¹ûÐ¾Æ¬²»´øCRC£¬µÃµ½µÄ¾ÍÊÇÈí¼þÊµÏÖµÄCRC½Ó¿Ú¡£¶ÔÓÚ¸ß²ãÓ¦ÓÃ£¬²»ÐèÒª¹ØÐÄCRCÊÇÓ²¼þ»¹ÊÇÈí¼þ£¬µ±È»£¬Êµ¼ÊÊ¹ÓÃµÄÊ±ºò£¬ÐÔÄÜÉÏ»áÓÐ²î±ð¡£
+3. ¿É¶¯Ì¬ÖØ¹¹×ÊÔ´·ÖÅä¡£ÓÐÐ©Ð¾Æ¬»á´øÓÐÒ»¶¨µÄÓ²¼þ¶¯Ì¬ÖØ¹¹ÌØÐÔ£¬¸ß²ã¿ÉÒÔÉêÇëÐèÒªÖØ¹¹µÄÍâÉè£¬µ×²ã×Ô¶¯ÖØ¹¹¡£
 
 ###¶ÔÍâÉè±àºÅ£¬²¢ÇÒÍ¨¹ý±àºÅÀ´·ÃÎÊ
 
@@ -148,8 +160,10 @@ vsf_err_t gd32f1x0_i2c_init(uint8_t index)
 
 Í¨¹ý±àºÅ£¬¾Í¿ÉÒÔ·ÃÎÊ¶ÔÓ¦µÄÐ¾Æ¬ÍâÉè¡£BSPÀï´æ·Åµ±Ç°Ó²¼þÊ¹ÓÃµÄËùÓÐÍâÉè¶ÔÓ¦µÄ±àºÅ£¬ÕâÑù£¬¾Í¿ÉÒÔ¼òµ¥ÊµÏÖÓ²¼þÅäÖÃÎÄ¼þ£¬ÊÇµÄ¶ÔÓÚ²»Í¬µÄ¹¤³Ì£¬Ó¦ÓÃ´úÂëÍ¨ÓÃ¡£Ð¾Æ¬ÒÆÖ²Ò²Ö»ÐèÒªÐÂ½¨¶ÔÓ¦µÄ¹¤³Ì£¬²¢ÇÒÐÞ¸ÄÓ²¼þÅäÖÃÎÄ¼þ£¬ÒÔ·ûºÏÊµ¼ÊÓ²¼þ¡£
 
-###Í¼ÐÎ»¯ÅäÖÃ
+###Í¼ÐÎ»¯ÅäÖÃÒÔ¼°´úÂë×Ô¶¯Éú³É
 Í¼ÐÎ»¯ÅäÖÃ¿ÉÒÔÓÃÀ´ÊµÏÖÐ¾Æ¬ºÍÍâ²¿Ä£¿éµÄ¹¦ÄÜÅäÖÃ£¬×Ô¶¯Éú³ÉBSPÓ²¼þÅäÖÃÎÄ¼þ£¬ÒÔ¼°Ä£¿éµÄÅäÖÃÎÄ¼þ¡£Í¼ÐÎ»¯×é¼þÓÉxml¶¨Òå£¬°üº¬¸÷ÖÖ²»Í¬MCU×é¼þ¡¢¸÷ÖÖÓÃ»§Ä£¿é×é¼þ¡£
+
+Í¼ÐÎ»¯ÅäÖÃµÄÊ±ºò£¬ÓÃ»§¿ÉÒÔ×Ô¼º¼ÓÈë¸÷¸ö×é¼þ£¬±ÈÈçMCU×é¼þ£¨¿ÉÒÔÊÇÌØ¶¨µÄMCUÐ¾Æ¬£¬Ò²¿ÉÒÔÊÇÐéÄâµÄMCU£©¡£È»ºó£¬ÔÚ¸÷¸ö×é¼þÖ®¼ä½¨Á¢¹ØÏµ£¬²¢ÇÒÅäÖÃÏàÓ¦µÄ²ÎÊý¡£±ÈÈç£¬°ÑMCU×é¼þµÄÒ»Â·SPIÁ¬½Óµ½Dataflash×é¼þ£¬ÕâÖÖ¿ÉÒÔ×Ô¶¯Éú³ÉÏàÓ¦µÄÓ²¼þÅäÖÃÐÅÏ¢¡£µ±È»£¬×é¼þ»¹¿ÉÒÔ°üÀ¨Èí¼þ×é¼þ£¬±ÈÈçÒ»¸öMP3±àÂë×é¼þ£¬¾ß±¸Ò»¸öÊäÈëÁ÷ºÍÒ»¸öÊä³öÁ÷£¬ÊäÈëÁ÷Á´½Óµ½ÒôÆµ²ÉÑùÍâÉè£¬Êä³öÁ÷½Óµ½USBµÄAudio½Ó¿Ú£¬È»ºó×Ô¶¯Éú³É¶ÔÓ¦µÄ´úÂë¡£
 
 ###½Ó¿Ú¶¼ÊÇ·Ç×èÈûµÄ£¬²¢ÇÒ¿ÉÒÔÔÚÂÖÑ¯ºÍÖÐ¶Ï·½Ê½ÖÐÊ¹ÓÃ
 
@@ -183,6 +197,19 @@ void vsfhal_tickclk_poll()
 }
 ```
 ÕâÀï£¬SysTick_Handler¾ÍÊÇÖÐ¶Ï½Ó¿Ú£¬ÔÚÂÖÑ¯Ä£Ê½ÏÂ£¬pollÀïµÄ´úÂë£¬»áÔÚ¶¨Ê±Æ÷Òç³öµÄÊ±ºò£¬µ÷ÓÃSysTick_Handler¡£
+
+###2ÖÖÓ¦ÓÃ¿ª·¢·½Ê½
+
+ÓÃ»§¿ÉÒÔ×Ô¼ºÑ¡Ôñ£¬Ê¹ÓÃ¶¯Ì¬¿âµÄ¿ª·¢·½Ê½£¬Ó¦ÓÃ¿ª·¢»á¸ü¼Ó¼òµ¥£¬Ò²ÊÇÍÆ¼öµÄ·½Ê½¡£µ±È»£¬Èç¹ûÓÃ»§ÐèÒª¸üºÃµÄÓÅ»¯£¬ÒÔ¼°Ò»Ð©¶¨ÖÆ»¯µÄ¹¦ÄÜ£¬¿ÉÒÔÑ¡ÔñÊ¹ÓÃÔ´´úÂë±àÒë¿ª·¢¡£
+
+####Ö±½ÓÊ¹ÓÃÔ´´úÂë¿ª·¢
+
+haloµÄ¸÷¸ö¹¦ÄÜ¶¼Ìá¹©Ô´´úÂë£¬ÓÃ»§¿ÉÒÔÔÄ¶Á¸÷¸öÄ£¿éµÄËµÃ÷ÎÄµµ£¬×Ô¼ºÅäÖÃÄ£¿éµÄ²ÎÊý£¬Ö±½Ó´ÓÔ´´úÂë±àÒë³öÓ¦ÓÃ¡£
+
+####Ê¹ÓÃ¶¯Ì¬¿â¿ª·¢
+ÕâÀï¶ÔÓ¦ÓÃ¿ª·¢×öÁË¸üºÃµÄ¸ôÀë£¬Ó¦ÓÃÓÉ3¸ö¹¤³Ì×é³É£ºÓ¦ÓÃ¹¦ÄÜ£¨ÒÔ¼°ÖÐ¼ä¼þ£©¡¢BSP¡¢µ×²ãµÄÐ¾Æ¬Çý¶¯¡£3¸ö¹¤³Ì¿ÉÒÔ¶ÀÁ¢±àÒë£¬Ó¦ÓÃ´úÂë²»ÒÀÀµÌØ¶¨Ó²¼þµÄBSPºÍµ×²ãÐ¾Æ¬Çý¶¯¡£µ×²ãÐ¾Æ¬Çý¶¯¿ÉÒÔÖ±½ÓÊ¹ÓÃ±àÒëºÃµÄlib¿â¡£
+
+°´ÕÕCMSISµÄÍÆ¹ã¾­Ñé£¬Ò»¿ªÊ¼CMSISÌá¹©µÄ¶¼ÊÇÔ´´úÂë£¬ÓÉÓÃ»§×Ô¼º¼ÓÈëµ½¹¤³Ì±àÒë£¬½á¹û£¬80%µÄ·´À¡ÎÊÌâ£¬¶¼ÊÇºÍ±àÒëÓÐ¹ØµÄ¡£ºóÀ´CMSISÊ¹ÓÃ¿âµÄ·½Ê½£¬ÓÃ»§¾Í»ù±¾ÉÏ²»»áÅöµ½±àÒëµÄÎÊÌâÁË¡£CMSISµÄÕâ¸ö¾­Ñé·Ç³£ÖµµÃ½è¼ø¡£
 
 ###Ò»Ð©¹¹¼ÜÎÞ¹ØµÄ»ù´¡¹¹¼þ
 
