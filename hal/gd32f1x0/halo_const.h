@@ -25,23 +25,23 @@
  *                                                                          *
  ****************************************************************************/
 
-#ifndef __GD32F1X0_CONST_H_INCLUDED__
-#define __GD32F1X0_CONST_H_INCLUDED__
+#ifndef __HALO_CONST_H_INCLUDED__
+#define __HALO_CONST_H_INCLUDED__
 
 #include "gd32f1x0.h"
 #include "core.h"
 
-#define gd32f1x0_SLEEP_WFI				0
-#define gd32f1x0_SLEEP_PWRDOWN			1
+#define SLEEP_WFI						0
+#define SLEEP_PWRDOWN					1
 
-#define gd32f1x0_GPIO_INFLOAT			0x00
-#define gd32f1x0_GPIO_INPU				0x08
-#define gd32f1x0_GPIO_INPD				0x10
-#define gd32f1x0_GPIO_OUTPP				0x01
-#define gd32f1x0_GPIO_OUTOD				0x05
+#define GPIO_INFLOAT					0x00
+#define GPIO_INPU						0x08
+#define GPIO_INPD						0x10
+#define GPIO_OUTPP						0x01
+#define GPIO_OUTOD						0x05
 
-#define gd32f1x0_GPIO_OD				0x04
-#define gd32f1x0_GPIO_AF				0x02
-#define gd32f1x0_GPIO_AN				0x03
+#define GPIO_OD							0x04
+#define GPIO_AF							0x02
+#define GPIO_AN							0x03
 
-#endif	// __GD32F1X0_CONST_H_INCLUDED__
+#endif	// __HALO_CONST_H_INCLUDED__

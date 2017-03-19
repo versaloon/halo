@@ -27,26 +27,22 @@
 
 #include "halo.h"
 
-#if IFS_GPIO_EN
-
-#define GD32F1X0_GPIO_NUM					6
-
 #define RCC_APB2Periph_GPIOA			((uint32_t)0x00000004)
 
-vsf_err_t gd32f1x0_gpio_init(uint8_t index)
+halo_err_t halo_gpio_init(uint8_t index)
 {
 	RCC->AHBCCR |= RCC_AHBCCR_PAEN << index;
-	return VSFERR_NONE;
+	return HALOERR_NONE;
 }
 
-vsf_err_t gd32f1x0_gpio_fini(uint8_t index)
+halo_err_t halo_gpio_fini(uint8_t index)
 {
 	RCC->AHBRCR |= RCC_AHBRCR_PARST << index;
 	RCC->AHBCCR &= ~(RCC_AHBCCR_PAEN << index);
-	return VSFERR_NONE;
+	return HALOERR_NONE;
 }
 
-vsf_err_t gd32f1x0_gpio_config_pin(uint8_t index, uint8_t pin_idx, uint32_t mode)
+halo_err_t halo_gpio_config_pin(uint8_t index, uint8_t pin_idx, uint32_t mode)
 {
 	GPIO_TypeDef *gpio;
 	uint8_t offset = pin_idx << 1;
@@ -65,43 +61,43 @@ vsf_err_t gd32f1x0_gpio_config_pin(uint8_t index, uint8_t pin_idx, uint32_t mode
 	gpio->OSPD |= GPIO_OSPD_OSPD0 << offset;
 //	gpio->OSPD |= ((mode >> 5) & 0x3) << offset;
 	
-	return VSFERR_NONE;
+	return HALOERR_NONE;
 }
 
-vsf_err_t gd32f1x0_gpio_config(uint8_t index, uint32_t pin_mask, uint32_t io, 
+halo_err_t halo_gpio_config(uint8_t index, uint32_t pin_mask, uint32_t io, 
 							uint32_t pull_en_mask, uint32_t input_pull_mask)
 {
-	return VSFERR_NONE;
+	return HALOERR_NONE;
 }
 
-vsf_err_t gd32f1x0_gpio_set(uint8_t index, uint32_t pin_mask)
+halo_err_t halo_gpio_set(uint8_t index, uint32_t pin_mask)
 {
 	GPIO_TypeDef *gpio;
 	
 	gpio = (GPIO_TypeDef *)(GPIOA_BASE + ((uint32_t)index << 10));
 	gpio->BOR = pin_mask & 0xffff;
-	return VSFERR_NONE;
+	return HALOERR_NONE;
 }
 
-vsf_err_t gd32f1x0_gpio_clear(uint8_t index, uint32_t pin_mask)
+halo_err_t halo_gpio_clear(uint8_t index, uint32_t pin_mask)
 {
 	GPIO_TypeDef *gpio;
 	
 	gpio = (GPIO_TypeDef *)(GPIOA_BASE + ((uint32_t)index << 10));
 	gpio->BCR = pin_mask;
-	return VSFERR_NONE;
+	return HALOERR_NONE;
 }
 
-vsf_err_t gd32f1x0_gpio_out(uint8_t index, uint32_t pin_mask, uint32_t value)
+halo_err_t halo_gpio_out(uint8_t index, uint32_t pin_mask, uint32_t value)
 {
 	GPIO_TypeDef *gpio;
 	
 	gpio = (GPIO_TypeDef *)(GPIOA_BASE + ((uint32_t)index << 10));
 	gpio->BOR = ((pin_mask & ~value) << 16) | (pin_mask & value);
-	return VSFERR_NONE;
+	return HALOERR_NONE;
 }
 
-uint32_t gd32f1x0_gpio_get(uint8_t index, uint32_t pin_mask)
+uint32_t halo_gpio_get(uint8_t index, uint32_t pin_mask)
 {
 	GPIO_TypeDef *gpio;
 	
@@ -109,11 +105,8 @@ uint32_t gd32f1x0_gpio_get(uint8_t index, uint32_t pin_mask)
 	return gpio->DIR & pin_mask;
 }
 
-vsf_err_t gd32f1x0_gpio_in(uint8_t index, uint32_t pin_mask, uint32_t *value)
+halo_err_t halo_gpio_in(uint8_t index, uint32_t pin_mask, uint32_t *value)
 {
-	*value = gd32f1x0_gpio_get(index, pin_mask);
-	return VSFERR_NONE;
+	*value = halo_gpio_get(index, pin_mask);
+	return HALOERR_NONE;
 }
-
-#endif
-
